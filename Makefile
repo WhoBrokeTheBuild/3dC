@@ -14,7 +14,7 @@ DEP_DIR = .dep
 
 CFLAGS  += -g -Wall -std=c11 -I$(SRC_DIR) -Iinclude
 LDFLAGS += 
-LDLIBS  += -lglut -lGLU -lGL
+LDLIBS  += -lglut -lGLEW -lGLU -lGL
 
 # Dynamically get the sources/objects/tests
 
