@@ -5,7 +5,7 @@ PrintShaderProgramLog(GLuint program)
 {
     char * program_log = NULL;
 
-    CHECK(!glIsProgram(program), "Cannot print program log, %d is not a program", program);
+    CHECK(glIsProgram(program), "Cannot print program log, %d is not a program", program);
 
     GLint log_size = 0;
     glGetProgramiv(program, GL_INFO_LOG_LENGTH, &log_size); 
@@ -17,7 +17,7 @@ PrintShaderProgramLog(GLuint program)
 
     int ret_size = 0;
     glGetProgramInfoLog(program, log_size, &ret_size, program_log);
-    CHECK(ret_size <= 0, "Failed to get program log for %d", program);
+    CHECK(ret_size > 0, "Failed to get program log for %d", program);
     program_log[log_size] = '\0';
     
     LOG_INFO("Log for program %d:\n%s", program, program_log);
@@ -36,7 +36,7 @@ PrintShaderLog(GLuint shader)
 {
     char * shader_log = NULL;
 
-    CHECK(!glIsShader(shader), "Cannot print shader log, %d is not a shader", shader);
+    CHECK(glIsShader(shader), "Cannot print shader log, %d is not a shader", shader);
 
     GLint log_size = 0;
     glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &log_size); 
@@ -48,7 +48,7 @@ PrintShaderLog(GLuint shader)
 
     int ret_size = 0;
     glGetShaderInfoLog(shader, log_size, &ret_size, shader_log);
-    CHECK(ret_size <= 0, "Failed to get shader log for %d", shader);
+    CHECK(ret_size > 0, "Failed to get shader log for %d", shader);
     shader_log[log_size] = '\0';
     
     LOG_INFO("Log for shader %d:\n%s", shader, shader_log);
@@ -76,12 +76,13 @@ LoadShader(const char * filename, GLenum shader_type)
     CHECK(file_size < MAX_SHADER_SIZE, "Shader exceeds maximum size allowed (%ld > %d)",
            file_size, MAX_SHADER_SIZE);
 
-    shader_str = malloc(file_size * sizeof(char));
+    shader_str = malloc((file_size + 1) * sizeof(char));
     CHECK_MEM(shader_str);
 
     size_t bytes_read = fread(shader_str, 1, file_size, fp);
     CHECK(bytes_read == file_size, "Failed to read whole shader file '%s' read %zu/%ld",
             filename, bytes_read, file_size);
+    shader_str[file_size] = '\0';
 
     shader = glCreateShader(shader_type);
     CHECK(shader != 0, "Failed to create shader object");

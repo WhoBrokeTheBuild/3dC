@@ -2,9 +2,7 @@
 #define SHADERS_H
 
 #include <GL/glew.h>
-#include <GL/glut.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
+#include <GL/freeglut.h>
 #include <stdio.h>
 #include <stdbool.h>
 

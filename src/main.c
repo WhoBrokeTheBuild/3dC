@@ -1,7 +1,3 @@
-#include <GL/glew.h>
-#include <GL/glut.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
 #include <stdio.h>
 #include <stdbool.h>
 
@@ -23,11 +19,21 @@ main(int argc, char* argv[])
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
+    glutInitContextVersion(4, 3);
+    glutInitContextFlags(GLUT_CORE_PROFILE | GLUT_DEBUG);
+
+    glutInitWindowSize(1024, 768);
     glutCreateWindow("Test");
+
+    LOG_INFO("Running GLUT Version %d", glutGet(GLUT_VERSION));
 
     glewExperimental = GL_TRUE;
     GLenum glew_ret = glewInit();
     CHECK(glew_ret == GLEW_OK, "Failed to initialize GLEW %s", glewGetErrorString(glew_ret));
+
+    LOG_INFO("Running GLEW Version %s", glewGetString(GLEW_VERSION));
+    LOG_INFO("Running OpenGL Version %s", glGetString(GL_VERSION));
+    LOG_INFO("Running OpenGL GLSL Version %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
     ShaderInfo shaders[] = { 
         { .type = GL_VERTEX_SHADER,   .filename = "shaders/test.vs.glsl" },
