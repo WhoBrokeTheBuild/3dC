@@ -1,16 +1,9 @@
 #version 430 core
 
-layout (location = 0) in vec3 iVertexPosition;
-layout (location = 1) in vec3 iVertexNormal;
-layout (location = 2) in vec2 iVertexTexCoord;
+layout (location = 0) in vec4 vPosition;
 
-uniform mat4 uModelViewProj;
-uniform vec4 uFlatColor;
-
-layout (location = 0) out vec4 vColor;
-
-void main()
+void
+main()
 {
-    vColor = uFlatColor;
-    gl_Position = uModelViewProj * vec4(iVertexPosition, 1.0f);
+    gl_Position = vPosition;
 }

@@ -5,11 +5,25 @@
 #include "util.h"
 #include "shaders.h"
 
+#define BUFFER_OFFSET(x)  ((const void*) (x))
+
+enum VAO_IDs { Triangles, NumVAOs };
+enum Buffer_IDs { ArrayBuffer, NumBuffers };
+enum Attrib_IDs { vPosition = 0 };
+
+GLuint  VAOs[NumVAOs];
+GLuint  Buffers[NumBuffers];
+
+#define NumVertices 6
+
 static void
 Render(void)
 {
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
+
+    glBindVertexArray(VAOs[Triangles]);
+    glDrawArrays(GL_TRIANGLES, 0, NumVertices);
 
     glutSwapBuffers();
 }
@@ -36,13 +50,31 @@ main(int argc, char* argv[])
     LOG_INFO("Running OpenGL GLSL Version %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
     ShaderInfo shaders[] = { 
-        { .type = GL_VERTEX_SHADER,   .filename = "shaders/test.vs.glsl" },
-        { .type = GL_FRAGMENT_SHADER, .filename = "shaders/test.fs.glsl" },
-        { .type = GL_INVALID_ENUM,    .filename = NULL }
+        { GL_VERTEX_SHADER,   "shaders/test.vs.glsl" },
+        { GL_FRAGMENT_SHADER, "shaders/test.fs.glsl" },
+        { GL_NONE, NULL }
     };
-    GLuint test_sp = LoadShaderProgram(shaders);
+    GLuint prog = LoadShaderProgram(shaders);
 
-    glUseProgram(test_sp);
+    glUseProgram(prog);
+
+    glGenVertexArrays(NumVAOs, VAOs);
+    glBindVertexArray(VAOs[Triangles]);
+
+    GLfloat vertices[NumVertices][2] = {
+        { -0.90, -0.90 }, // Trangle 1
+        {  0.85, -0.90 },
+        { -0.90,  0.85 },
+        {  0.90, -0.85 }, // Trangle 2
+        {  0.90,  0.90 },
+        { -0.85,  0.90 }
+    };
+    glGenBuffers(NumBuffers, Buffers);
+    glBindBuffer(GL_ARRAY_BUFFER, Buffers[ArrayBuffer]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(vPosition, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+    glEnableVertexAttribArray(vPosition);
 
     glutDisplayFunc(Render);
     glutMainLoop();

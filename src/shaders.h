@@ -16,8 +16,8 @@
 
 typedef struct ShaderInfo
 {
+    GLenum       type;
     const char * filename;
-    GLenum type;
 
 } ShaderInfo;
 
