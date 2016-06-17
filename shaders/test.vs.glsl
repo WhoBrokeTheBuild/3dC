@@ -1,6 +1,6 @@
-#version 430 core
+#version 330 core
 
-layout (location = 0) in vec4 vPosition;
+in vec4 vPosition;
 
 void
 main()

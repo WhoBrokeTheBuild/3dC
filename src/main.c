@@ -33,7 +33,7 @@ main(int argc, char* argv[])
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
-    glutInitContextVersion(4, 3);
+    glutInitContextVersion(3, 3);
     glutInitContextFlags(GLUT_CORE_PROFILE | GLUT_DEBUG);
 
     glutInitWindowSize(1024, 768);
