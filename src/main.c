@@ -4,17 +4,12 @@
 #include "debug.h"
 #include "util.h"
 #include "shaders.h"
+#include "geom/vec.h"
+#include "geom/mat.h"
 
-#define BUFFER_OFFSET(x)  ((const void*) (x))
+#define BUFFER_OFFSET(x) ((const void*)(x))
 
-enum VAO_IDs { Triangles, NumVAOs };
-enum Buffer_IDs { ArrayBuffer, NumBuffers };
-enum Attrib_IDs { vPosition = 0 };
-
-GLuint  VAOs[NumVAOs];
-GLuint  Buffers[NumBuffers];
-
-#define NumVertices 6
+#ifndef TEST_BUILD
 
 static void
 Render(void)
@@ -22,14 +17,11 @@ Render(void)
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glBindVertexArray(VAOs[Triangles]);
-    glDrawArrays(GL_TRIANGLES, 0, NumVertices);
-
     glutSwapBuffers();
 }
 
-int 
-main(int argc, char* argv[]) 
+int
+main(int argc, char* argv[])
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
@@ -49,39 +41,47 @@ main(int argc, char* argv[])
     LOG_INFO("Running OpenGL Version %s", glGetString(GL_VERSION));
     LOG_INFO("Running OpenGL GLSL Version %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
-    ShaderInfo shaders[] = { 
-        { GL_VERTEX_SHADER,   "shaders/test.vs.glsl" },
-        { GL_FRAGMENT_SHADER, "shaders/test.fs.glsl" },
-        { GL_NONE, NULL }
-    };
+    ShaderInfo shaders[] = { { GL_VERTEX_SHADER, "shaders/test.vs.glsl" },
+                             { GL_FRAGMENT_SHADER, "shaders/test.fs.glsl" },
+                             { GL_NONE, NULL } };
     GLuint prog = LoadShaderProgram(shaders);
 
     glUseProgram(prog);
 
-    glGenVertexArrays(NumVAOs, VAOs);
-    glBindVertexArray(VAOs[Triangles]);
+    Vec3 testVec = { { 0.0f, 1.0f, 2.0f } };
+    Vec3_Print(&testVec);
 
-    GLfloat vertices[NumVertices][2] = {
-        { -0.90, -0.90 }, // Trangle 1
-        {  0.85, -0.90 },
-        { -0.90,  0.85 },
-        {  0.90, -0.85 }, // Trangle 2
-        {  0.90,  0.90 },
-        { -0.85,  0.90 }
-    };
-    glGenBuffers(NumBuffers, Buffers);
-    glBindBuffer(GL_ARRAY_BUFFER, Buffers[ArrayBuffer]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    testVec.data[0] = 5.0f;
+    testVec.data[1] = 4.0f;
+    testVec.data[2] = 3.0f;
+    Vec3_Print(&testVec);
 
-    glVertexAttribPointer(vPosition, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-    glEnableVertexAttribArray(vPosition);
+    testVec.x = 3.0f;
+    testVec.y = 2.0f;
+    testVec.z = 1.0f;
+    Vec3_Print(&testVec);
+
+    Vec3_Normalize(&testVec);
+    Vec3_Print(&testVec);
+
+    testVec.x = testVec.y = testVec.z = 0.0f;
+    Vec3 testVec2 = { { 0.0f, 0.0f, 1.0f } };
+    float dist = Vec3_Distance(&testVec, &testVec2);
+    printf("dist %f\n", dist);
+
+    Mat3 testMat = { {
+      1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+    } };
+    PrintMat3(&testMat);
 
     glutDisplayFunc(Render);
     glutMainLoop();
 
-	return 0;
+    return 0;
 
 error:
 
     return 1;
 }
+
+#endif // TEST_BUILD

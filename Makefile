@@ -13,8 +13,8 @@ DEP_DIR = .dep
 # Additional build configuration
 
 CFLAGS  += -g -Wall -std=c11 -I$(SRC_DIR) -Iinclude
-LDFLAGS += 
-LDLIBS  += -lglut -lGLEW -lGLU -lGL
+LDFLAGS +=
+LDLIBS  += -lglut -lGLEW -lGLU -lGL -lm
 
 # Dynamically get the sources/objects/tests
 
@@ -43,13 +43,13 @@ $(TARGET): $(OBJECTS)
 
 # Clean dependencies, objects, or the main target
 
-clean: 
+clean:
 	rm -rf $(DEP_DIR) $(OBJ_DIR) $(TARGET)
 
 clean_deps:
 	rm -rf $(DEP_DIR)
 
-clean_objects: 
+clean_objects:
 	rm -f $(OBJECTS)
 
 clean_target:
@@ -91,7 +91,7 @@ test: CFLAGS  += $(shell pkg-config check --cflags) -DTEST_BUILD
 test: LDFLAGS += $(shell pkg-config check --libs-only-L)
 test: LDLIBS  += $(shell pkg-config check --libs-only-l)
 test: clean_objects $(TESTS)
-	$(addsuffix ;,$(TESTS))
+	-$(addsuffix ;,$(TESTS))
 	rm -f $(TESTS)
 	rm -f $(OBJECTS)
 

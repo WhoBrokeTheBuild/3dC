@@ -1,17 +1,18 @@
 #include "shaders.h"
-    
+
 bool
 PrintShaderProgramLog(GLuint program)
 {
-    char * program_log = NULL;
+    char* program_log = NULL;
 
     CHECK(glIsProgram(program), "Cannot print program log, %d is not a program", program);
 
     GLint log_size = 0;
-    glGetProgramiv(program, GL_INFO_LOG_LENGTH, &log_size); 
-    CHECK(log_size < MAX_PROGRAM_LOG_SIZE, "Program log for %d exceeds maximum size allowed (%d > %d)",
-            program, log_size, MAX_PROGRAM_LOG_SIZE);
-    
+    glGetProgramiv(program, GL_INFO_LOG_LENGTH, &log_size);
+    CHECK(log_size < MAX_PROGRAM_LOG_SIZE,
+          "Program log for %d exceeds maximum size allowed (%d > %d)", program, log_size,
+          MAX_PROGRAM_LOG_SIZE);
+
     program_log = malloc((log_size + 1) * sizeof(char));
     CHECK_MEM(program_log);
 
@@ -19,7 +20,7 @@ PrintShaderProgramLog(GLuint program)
     glGetProgramInfoLog(program, log_size, &ret_size, program_log);
     CHECK(ret_size > 0, "Failed to get program log for %d", program);
     program_log[log_size] = '\0';
-    
+
     LOG_INFO("Log for program %d:\n%s", program, program_log);
 
     free(program_log);
@@ -34,15 +35,16 @@ error:
 bool
 PrintShaderLog(GLuint shader)
 {
-    char * shader_log = NULL;
+    char* shader_log = NULL;
 
     CHECK(glIsShader(shader), "Cannot print shader log, %d is not a shader", shader);
 
     GLint log_size = 0;
-    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &log_size); 
-    CHECK(log_size < MAX_SHADER_LOG_SIZE, "Shader log for %d exceeds maximum size allowed (%d > %d)",
-            shader, log_size, MAX_SHADER_LOG_SIZE);
-    
+    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &log_size);
+    CHECK(log_size < MAX_SHADER_LOG_SIZE,
+          "Shader log for %d exceeds maximum size allowed (%d > %d)", shader, log_size,
+          MAX_SHADER_LOG_SIZE);
+
     shader_log = malloc((log_size + 1) * sizeof(char));
     CHECK_MEM(shader_log);
 
@@ -50,7 +52,7 @@ PrintShaderLog(GLuint shader)
     glGetShaderInfoLog(shader, log_size, &ret_size, shader_log);
     CHECK(ret_size > 0, "Failed to get shader log for %d", shader);
     shader_log[log_size] = '\0';
-    
+
     LOG_INFO("Log for shader %d:\n%s", shader, shader_log);
 
     free(shader_log);
@@ -63,25 +65,25 @@ error:
 }
 
 GLuint
-LoadShader(const char * filename, GLenum shader_type)
+LoadShader(const char* filename, GLenum shader_type)
 {
     GLuint shader = 0;
-    char * shader_str = NULL;
-    FILE * fp = NULL;
+    char* shader_str = NULL;
+    FILE* fp = NULL;
 
     fp = fopen(filename, "r");
     CHECK(fp, "Failed to open shader '%s'", filename);
 
     long int file_size = GetFileSize(fp);
-    CHECK(file_size < MAX_SHADER_SIZE, "Shader exceeds maximum size allowed (%ld > %d)",
-           file_size, MAX_SHADER_SIZE);
+    CHECK(file_size < MAX_SHADER_SIZE, "Shader exceeds maximum size allowed (%ld > %d)", file_size,
+          MAX_SHADER_SIZE);
 
     shader_str = malloc((file_size + 1) * sizeof(char));
     CHECK_MEM(shader_str);
 
     size_t bytes_read = fread(shader_str, 1, file_size, fp);
-    CHECK(bytes_read == file_size, "Failed to read whole shader file '%s' read %zu/%ld",
-            filename, bytes_read, file_size);
+    CHECK(bytes_read == file_size, "Failed to read whole shader file '%s' read %zu/%ld", filename,
+          bytes_read, file_size);
     shader_str[file_size] = '\0';
 
     shader = glCreateShader(shader_type);
@@ -102,7 +104,8 @@ LoadShader(const char * filename, GLenum shader_type)
 
 error:
 
-    if (shader) PrintShaderLog(shader);
+    if (shader)
+        PrintShaderLog(shader);
 
     free(shader_str);
     fclose(fp);
@@ -112,7 +115,7 @@ error:
 }
 
 GLuint
-LoadShaderProgram(ShaderInfo * shaders)
+LoadShaderProgram(ShaderInfo* shaders)
 {
     GLuint program = 0;
     GLuint shader_ids[MAX_SHADER_COUNT];
@@ -121,7 +124,8 @@ LoadShaderProgram(ShaderInfo * shaders)
     CHECK(program != 0, "Failed to create shader program object");
 
     for (int i = 0; shaders[i].filename; ++i) {
-        CHECK(i < MAX_SHADER_COUNT, "Exceeded maximum number of shaders allowed %d", MAX_SHADER_COUNT);
+        CHECK(i < MAX_SHADER_COUNT, "Exceeded maximum number of shaders allowed %d",
+              MAX_SHADER_COUNT);
 
         shader_ids[i] = LoadShader(shaders[i].filename, shaders[i].type);
         CHECK(shader_ids[i] != -1, "Failed to load shader program");
@@ -134,12 +138,13 @@ LoadShaderProgram(ShaderInfo * shaders)
     GLint program_linked = GL_FALSE;
     glGetProgramiv(program, GL_LINK_STATUS, &program_linked);
     CHECK(program_linked, "Failed to link program");
-    
+
     return program;
 
 error:
 
-    if (program) PrintShaderProgramLog(program);
+    if (program)
+        PrintShaderProgramLog(program);
 
     for (int i = 0; i < MAX_SHADER_COUNT; ++i) {
         glDeleteShader(shader_ids[i]);
