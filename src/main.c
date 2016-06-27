@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 #include <stdbool.h>
 
@@ -41,8 +45,8 @@ main(int argc, char* argv[])
     LOG_INFO("Running OpenGL Version %s", glGetString(GL_VERSION));
     LOG_INFO("Running OpenGL GLSL Version %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
-    ShaderInfo shaders[] = { { GL_VERTEX_SHADER, "shaders/test.vs.glsl" },
-                             { GL_FRAGMENT_SHADER, "shaders/test.fs.glsl" },
+    ShaderInfo shaders[] = { { GL_VERTEX_SHADER, "shaders/PostProcessGodrayVS.glsl" },
+                             { GL_FRAGMENT_SHADER, "shaders/PostProcessGodrayFS.glsl" },
                              { GL_NONE, NULL } };
     GLuint prog = LoadShaderProgram(shaders);
 
@@ -70,9 +74,11 @@ main(int argc, char* argv[])
     printf("dist %f\n", dist);
 
     Mat3 testMat = { {
-      1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+      { 1.0f, 0.0f, 0.0f },
+      { 0.0f, 1.0f, 0.0f },
+      { 0.0f, 0.0f, 1.0f },
     } };
-    PrintMat3(&testMat);
+    Mat3x3_Print(&testMat);
 
     glutDisplayFunc(Render);
     glutMainLoop();
@@ -85,3 +91,7 @@ error:
 }
 
 #endif // TEST_BUILD
+
+#ifdef __cplusplus
+} // extern "C"
+#endif

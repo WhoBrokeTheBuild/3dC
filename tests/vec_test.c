@@ -57,7 +57,7 @@ START_TEST(test_Vec2_Length)
     Vec2 a = { { 2.2f, 3.6f } };
     Vec2 b = { { -4.8f, -2.2f } };
 
-    const float expLenA = 4.219005f, expLenB = 5.28f;
+    const float expLenA = 4.219f, expLenB = 5.28f;
 
     float lenA = Vec2_Length(&a);
     if (lenA < expLenA - FLOAT_ERR_THRESHOLD || lenA > expLenA + FLOAT_ERR_THRESHOLD) {
