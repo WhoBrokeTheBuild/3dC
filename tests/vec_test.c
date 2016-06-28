@@ -117,24 +117,88 @@ END_TEST
 START_TEST(test_Vec3_Length)
 {
     Vec3 a = { { 1.0f, 2.0f, 3.0f } };
-    // Vec3 b = {{  }};
 
     const float expLenA = 3.742f;
-    // expLenB = 5.28f;
 
     float lenA = Vec3_Length(&a);
     if (lenA < expLenA - FLOAT_ERR_THRESHOLD || lenA > expLenA + FLOAT_ERR_THRESHOLD) {
         fprintf(stderr, "Expected %f, got %f\n", expLenA, lenA);
         ck_abort_msg("Vec3_Length failed");
     }
+}
+END_TEST
 
-    // float lenB = Vec2_Length(&b);
-    // if (lenB < expLenB - FLOAT_ERR_THRESHOLD ||
-    //    lenB > expLenB + FLOAT_ERR_THRESHOLD)
-    //{
-    //    fprintf(stderr, "Expected %f, got %f\n", expLenB, lenB);
-    //    ck_abort_msg("Vec2_Length failed");
-    //}
+START_TEST(test_Vec3_Cross)
+{
+    Vec3 a = { { 1.0f, 2.0f, 3.0f } };
+    Vec3 b = { { 4.0f, 5.0f, 6.0f } };
+
+    const Vec3 expRes = { { -3.0f, 6.0f, -3.0f } };
+
+    Vec3_Cross(&a, &b);
+    if (!Vec3_Equals(&a, &expRes)) {
+        fprintf(stderr, "Expected [ %f %f %f ], got [ %f %f %f ]\n", expRes.x, expRes.y, expRes.z,
+                a.x, a.y, a.z);
+        ck_abort_msg("Vec3_Cross failed");
+    }
+}
+END_TEST
+
+START_TEST(test_Vec4_xyzw)
+{
+    Vec4 a = { { 123.0f, 456.0f, 789.0f, 1012.0f } };
+
+    ck_assert(a.x == 123.0f);
+    ck_assert(a.y == 456.0f);
+    ck_assert(a.z == 789.0f);
+    ck_assert(a.w == 1012.0f);
+}
+END_TEST
+
+START_TEST(test_Vec4_abcd)
+{
+    Vec4 a = { { 123.0f, 456.0f, 789.0f, 1012.0f } };
+
+    ck_assert(a.a == 123.0f);
+    ck_assert(a.b == 456.0f);
+    ck_assert(a.c == 789.0f);
+    ck_assert(a.d == 1012.0f);
+}
+END_TEST
+
+START_TEST(test_Vec4_data)
+{
+    Vec4 a = { { 123.0f, 456.0f, 789.0f, 1012.0f } };
+
+    ck_assert(a.data[0] == 123.0f);
+    ck_assert(a.data[1] == 456.0f);
+    ck_assert(a.data[2] == 789.0f);
+    ck_assert(a.data[3] == 1012.0f);
+}
+END_TEST
+
+START_TEST(test_Vec4_Equals)
+{
+    Vec4 a = { { 123.0f, 456.0f, 789.0f, 1012.0f } };
+    Vec4 b = { { 123.0f, 456.0f, 789.0f, 1012.0f } };
+    Vec4 c = { { 1.0f, 2.0f, 3.0f, 4.0f } };
+
+    ck_assert(Vec4_Equals(&a, &b));
+    ck_assert(!Vec4_Equals(&a, &c));
+}
+END_TEST
+
+START_TEST(test_Vec4_Length)
+{
+    Vec4 a = { { 1.0f, 2.0f, 3.0f, 4.0f } };
+
+    const float expLenA = 5.477f;
+
+    float lenA = Vec4_Length(&a);
+    if (lenA < expLenA - FLOAT_ERR_THRESHOLD || lenA > expLenA + FLOAT_ERR_THRESHOLD) {
+        fprintf(stderr, "Expected %f, got %f\n", expLenA, lenA);
+        ck_abort_msg("Vec3_Length failed");
+    }
 }
 END_TEST
 
@@ -161,10 +225,15 @@ vec_suite()
     tcase_add_test(tc_vec3, test_Vec3_data);
     tcase_add_test(tc_vec3, test_Vec3_Equals);
     tcase_add_test(tc_vec3, test_Vec3_Length);
+    tcase_add_test(tc_vec3, test_Vec3_Cross);
     suite_add_tcase(s, tc_vec3);
 
     tc_vec4 = tcase_create("Vec4");
-
+    tcase_add_test(tc_vec4, test_Vec4_xyzw);
+    tcase_add_test(tc_vec4, test_Vec4_abcd);
+    tcase_add_test(tc_vec4, test_Vec4_data);
+    tcase_add_test(tc_vec4, test_Vec4_Equals);
+    tcase_add_test(tc_vec4, test_Vec4_Length);
     suite_add_tcase(s, tc_vec4);
 
     return s;
