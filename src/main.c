@@ -74,9 +74,7 @@ main(int argc, char* argv[])
     printf("dist %f\n", dist);
 
     Mat3 testMat = { {
-      { 1.0f, 0.0f, 0.0f },
-      { 0.0f, 1.0f, 0.0f },
-      { 0.0f, 0.0f, 1.0f },
+      { 1.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f },
     } };
     Mat3x3_Print(&testMat);
 
