@@ -31,7 +31,6 @@ tags
 # Object files
 *.o
 *.ko
-*.obj
 *.elf
 
 # Precompiled Headers
@@ -67,4 +66,3 @@ tags
 /obj
 /.dep
 /tests/*_test
-
