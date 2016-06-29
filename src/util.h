@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-#include "debug.h"
+#include <debug.h>
 
 long int GetFileSize(FILE * fp);
 

@@ -28,7 +28,7 @@ typedef struct Material {
 } Material;
 
 Material * Material_Create();
-void Material_Destroy(Material * matl);
+void Material_Destroy(Material * mtl);
 Material * Material_Load(const char * filename);
 
 #endif // MATERIAL_H

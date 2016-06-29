@@ -5,11 +5,12 @@ extern "C" {
 #include <stdio.h>
 #include <stdbool.h>
 
-#include "debug.h"
-#include "util.h"
-#include "shaders.h"
-#include "geom/vec.h"
-#include "geom/mat.h"
+#include <debug.h>
+#include <util.h>
+#include <shaders.h>
+#include <geom/vec.h>
+#include <geom/mat.h>
+#include <objloader/obj.h>
 
 #define BUFFER_OFFSET(x) ((const void *)(x))
 
@@ -50,6 +51,9 @@ main(int argc, char * argv[])
     GLuint prog = LoadShaderProgram(shaders);
 
     glUseProgram(prog);
+
+    OBJ * cube = OBJ_Load("assets/cube.obj");
+    OBJ_Destroy(cube);
 
     glutDisplayFunc(Render);
     glutMainLoop();

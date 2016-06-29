@@ -7,72 +7,72 @@
 Material *
 Material_Create()
 {
-    Material * matl = (Material *)malloc(sizeof(Material));
-    CHECK_MEM(matl);
+    Material * mtl = (Material *)malloc(sizeof(Material));
+    CHECK_MEM(mtl);
 
-    matl->ambient = Vec3_ZERO;
-    matl->diffuse = Vec3_ZERO;
-    matl->specular = Vec3_ZERO;
-    matl->transmittance = Vec3_ZERO;
-    matl->emission = Vec3_ZERO;
+    mtl->ambient = Vec3_ZERO;
+    mtl->diffuse = Vec3_ZERO;
+    mtl->specular = Vec3_ZERO;
+    mtl->transmittance = Vec3_ZERO;
+    mtl->emission = Vec3_ZERO;
 
-    matl->shininess = 1.0f;
-    matl->ior = 1.0f;
-    matl->dissolve = 1.0f;
-    matl->illum = 0;
+    mtl->shininess = 1.0f;
+    mtl->ior = 1.0f;
+    mtl->dissolve = 1.0f;
+    mtl->illum = 0;
 
-    matl->name = NULL;
-    matl->ambient_texname = NULL;
-    matl->diffuse_texname = NULL;
-    matl->specular_texname = NULL;
-    matl->specular_highlight_texname = NULL;
-    matl->bump_texname = NULL;
-    matl->displacement_texname = NULL;
-    matl->alpha_texname = NULL;
+    mtl->name = NULL;
+    mtl->ambient_texname = NULL;
+    mtl->diffuse_texname = NULL;
+    mtl->specular_texname = NULL;
+    mtl->specular_highlight_texname = NULL;
+    mtl->bump_texname = NULL;
+    mtl->displacement_texname = NULL;
+    mtl->alpha_texname = NULL;
 
-    return matl;
+    return mtl;
 
 error:
-    Material_Destroy(matl);
+    Material_Destroy(mtl);
 
     return NULL;
 }
 
 void
-Material_Destroy(Material * matl)
+Material_Destroy(Material * mtl)
 {
-    if (!matl)
+    if (!mtl)
         return;
 
-    free(matl->name);
-    free(matl->ambient_texname);
-    free(matl->diffuse_texname);
-    free(matl->specular_texname);
-    free(matl->specular_highlight_texname);
-    free(matl->bump_texname);
-    free(matl->displacement_texname);
-    free(matl->alpha_texname);
-    free(matl);
+    free(mtl->name);
+    free(mtl->ambient_texname);
+    free(mtl->diffuse_texname);
+    free(mtl->specular_texname);
+    free(mtl->specular_highlight_texname);
+    free(mtl->bump_texname);
+    free(mtl->displacement_texname);
+    free(mtl->alpha_texname);
+    free(mtl);
 }
 
 Material *
 Material_Load(const char * filename)
 {
     FILE * fp = NULL;
-    Material * matl = NULL;
+    Material * mtl = NULL;
 
     fp = fopen(filename, "r");
     CHECK(!feof(fp), "Failed to open file %s", filename);
 
-    matl = Material_Create(10);
-    CHECK_MEM(matl);
+    mtl = Material_Create(10);
+    CHECK_MEM(mtl);
 
     fclose(fp);
-    return matl;
+    return mtl;
 
 error:
     fclose(fp);
-    Material_Destroy(matl);
+    Material_Destroy(mtl);
 
     return NULL;
 }

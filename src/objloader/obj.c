@@ -36,6 +36,11 @@ OBJ_Load(const char * filename)
     fp = fopen(filename, "r");
     CHECK(!feof(fp), "Failed to open file %s", filename);
 
+    char line[1024];
+    while (fgets(line, sizeof(line), fp) != NULL) {
+        printf("%s", line);
+    }
+
     obj = OBJ_Create(10);
     CHECK_MEM(obj);
 
