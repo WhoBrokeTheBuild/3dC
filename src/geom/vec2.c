@@ -4,6 +4,8 @@
 #include <math.h>
 #include <assert.h>
 
+Vec2 Vec2Zero = { { 0.0f, 0.0f } };
+
 void
 Vec2_Print(const Vec2* vec)
 {

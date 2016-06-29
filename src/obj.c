@@ -5,17 +5,17 @@
 #include "debug.h"
 
 Material*
-Material_Create()
+Material_create()
 {
     Material* matl = (Material*)malloc(sizeof(Material));
     CHECK_MEM(matl);
 
     matl->name = NULL;
-    matl->ambient = { { 0.0f, 0.0f, 0.0f } };
-    matl->diffuse = { { 0.0f, 0.0f, 0.0f } };
-    matl->specular = { { 0.0f, 0.0f, 0.0f } };
-    matl->transmittance = { { 0.0f, 0.0f, 0.0f } };
-    matl->emission = { { 0.0f, 0.0f, 0.0f } };
+    matl->ambient = Vec3Zero;
+    matl->diffuse = Vec3Zero;
+    matl->specular = Vec3Zero;
+    matl->transmittance = Vec3Zero;
+    matl->emission = Vec3Zero;
     matl->shininess = 1.0f;
     matl->ior = 1.0f;
     matl->dissolve = 1.0f;
@@ -31,13 +31,13 @@ Material_Create()
     return matl;
 
 error:
-    Material_Destroy(matl);
+    Material_destroy(matl);
 
     return NULL;
 }
 
 void
-Material_Destroy(Material* matl)
+Material_destroy(Material* matl)
 {
     if (!matl)
         return;
@@ -53,8 +53,14 @@ Material_Destroy(Material* matl)
     free(matl);
 }
 
+Material*
+Material_load(const char* filename)
+{
+    FILE* fp = NULL;
+}
+
 Mesh*
-Mesh_Create()
+Mesh_create()
 {
     Mesh* mesh = (Mesh*)malloc(sizeof(Mesh));
     CHECK_MEM(mesh);
@@ -67,13 +73,13 @@ Mesh_Create()
     return mesh;
 
 error:
-    Mesh_Destroy(mesh);
+    Mesh_destroy(mesh);
 
     return NULL;
 }
 
 void
-Mesh_Destroy(Mesh* mesh)
+Mesh_destroy(Mesh* mesh)
 {
     if (!mesh)
         return;
@@ -86,35 +92,35 @@ Mesh_Destroy(Mesh* mesh)
 }
 
 Shape*
-Shape_Create()
+Shape_create()
 {
     Shape* shape = (Shape*)malloc(sizeof(Shape));
     CHECK_MEM(shape);
 
     shape->name = NULL;
-    shape->mesh = Mesh_Create();
+    shape->mesh = Mesh_create();
 
     return shape;
 
 error:
-    Shape_Destroy(shape);
+    Shape_destroy(shape);
 
     return NULL;
 }
 
 void
-Shape_Destroy(Shape* shape)
+Shape_destroy(Shape* shape)
 {
     if (!shape)
         return;
 
     free(shape->name);
-    Mesh_Destroy(shape->mesh);
+    Mesh_destroy(shape->mesh);
     free(shape);
 }
 
 OBJ*
-OBJ_Create(int vertCount)
+OBJ_create(int vertCount)
 {
     OBJ* obj = (OBJ*)malloc(sizeof(OBJ));
     CHECK_MEM(obj);
@@ -122,13 +128,13 @@ OBJ_Create(int vertCount)
     return obj;
 
 error:
-    OBJ_Destroy(obj);
+    OBJ_destroy(obj);
 
     return NULL;
 }
 
 void
-OBJ_Destroy(OBJ* obj)
+OBJ_destroy(OBJ* obj)
 {
     if (!obj)
         return;
@@ -137,7 +143,7 @@ OBJ_Destroy(OBJ* obj)
 }
 
 OBJ*
-OBJ_Load(const char* filename)
+OBJ_load(const char* filename)
 {
     FILE* fp = NULL;
     OBJ* obj = NULL;
@@ -145,7 +151,7 @@ OBJ_Load(const char* filename)
     fp = fopen(filename, "r");
     CHECK(!feof(fp), "Failed to open file %s", filename);
 
-    obj = OBJ_Create(10);
+    obj = OBJ_create(10);
     CHECK_MEM(obj);
 
     fclose(fp);

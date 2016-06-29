@@ -138,7 +138,7 @@ START_TEST(test_Vec3_Cross)
     Vec3_Cross(&a, &b);
     if (!Vec3_Equals(&a, &expRes)) {
         fprintf(stderr, "Expected [ %f %f %f ], got [ %f %f %f ]\n", expRes.x, expRes.y, expRes.z,
-                a.x, a.y, a.z);
+            a.x, a.y, a.z);
         ck_abort_msg("Vec3_Cross failed");
     }
 }
@@ -202,10 +202,10 @@ START_TEST(test_Vec4_Length)
 }
 END_TEST
 
-Suite*
+Suite *
 vec_suite()
 {
-    Suite* s;
+    Suite * s;
     TCase *tc_vec2, *tc_vec3, *tc_vec4;
 
     s = suite_create("Vectors");
@@ -240,11 +240,11 @@ vec_suite()
 }
 
 int
-main(int argc, char** argv)
+main(int argc, char ** argv)
 {
     int number_failed;
-    Suite* s;
-    SRunner* sr;
+    Suite * s;
+    SRunner * sr;
 
     s = vec_suite();
     sr = srunner_create(s);

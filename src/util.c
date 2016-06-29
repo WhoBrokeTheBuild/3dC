@@ -1,7 +1,7 @@
 #include "util.h"
 
 long int
-GetFileSize(FILE* fp)
+GetFileSize(FILE * fp)
 {
     CHECK(fp, "File isn't open");
 

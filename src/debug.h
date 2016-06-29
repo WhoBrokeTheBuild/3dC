@@ -11,11 +11,11 @@
 
 #define LOG_WARN(M, ...)                                                                           \
     fprintf(stderr, "[WARN] (%s:%d: errno: %s) " M "\n", __FILE__, __LINE__, CLEAN_ERRNO(),        \
-            ##__VA_ARGS__);
+        ##__VA_ARGS__);
 
 #define LOG_ERR(M, ...)                                                                            \
     fprintf(stderr, "[ERROR] (%s:%d: errno: %s) " M "\n", __FILE__, __LINE__, CLEAN_ERRNO(),       \
-            ##__VA_ARGS__);
+        ##__VA_ARGS__);
 
 #define CHECK(A, M, ...)                                                                           \
     if (!(A)) {                                                                                    \

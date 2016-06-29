@@ -11,7 +11,7 @@ extern "C" {
 #include "geom/vec.h"
 #include "geom/mat.h"
 
-#define BUFFER_OFFSET(x) ((const void*)(x))
+#define BUFFER_OFFSET(x) ((const void *)(x))
 
 #ifndef TEST_BUILD
 
@@ -25,7 +25,7 @@ Render(void)
 }
 
 int
-main(int argc, char* argv[])
+main(int argc, char * argv[])
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
@@ -46,8 +46,7 @@ main(int argc, char* argv[])
     LOG_INFO("Running OpenGL GLSL Version %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
     ShaderInfo shaders[] = { { GL_VERTEX_SHADER, "shaders/PostProcessGodrayVS.glsl" },
-                             { GL_FRAGMENT_SHADER, "shaders/PostProcessGodrayFS.glsl" },
-                             { GL_NONE, NULL } };
+        { GL_FRAGMENT_SHADER, "shaders/PostProcessGodrayFS.glsl" }, { GL_NONE, NULL } };
     GLuint prog = LoadShaderProgram(shaders);
 
     glUseProgram(prog);
@@ -74,7 +73,7 @@ main(int argc, char* argv[])
     printf("dist %f\n", dist);
 
     Mat3 testMat = { {
-      { 1.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f },
+        { 1.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f },
     } };
     Mat3x3_Print(&testMat);
 

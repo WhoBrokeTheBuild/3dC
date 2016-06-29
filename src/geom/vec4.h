@@ -17,6 +17,8 @@ typedef union Vec4
 
 } Vec4;
 
+extern Vec4 Vec4Zero;
+
 void Vec4_Print(const Vec4* vec);
 
 bool Vec4_Equals(const Vec4* vecA, const Vec4* vecB);

@@ -14,17 +14,16 @@
 #define MAX_SHADER_LOG_SIZE 100000
 #define MAX_PROGRAM_LOG_SIZE MAX_SHADER_LOG_SIZE
 
-typedef struct ShaderInfo
-{
+typedef struct ShaderInfo {
     GLenum type;
-    const char* filename;
+    const char * filename;
 
 } ShaderInfo;
 
 bool PrintShaderProgramLog(GLuint program);
 bool PrintShaderLog(GLuint shader);
 
-GLuint LoadShader(const char* filename, GLenum shader_type);
-GLuint LoadShaderProgram(ShaderInfo* shaders);
+GLuint LoadShader(const char * filename, GLenum shader_type);
+GLuint LoadShaderProgram(ShaderInfo * shaders);
 
 #endif // SHADERS_H

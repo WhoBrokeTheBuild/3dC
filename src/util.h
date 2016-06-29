@@ -5,6 +5,6 @@
 
 #include "debug.h"
 
-long int GetFileSize(FILE* fp);
+long int GetFileSize(FILE * fp);
 
 #endif // UTIL_H

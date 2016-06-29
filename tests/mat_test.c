@@ -3,10 +3,10 @@
 #include <check.h>
 #include "geom/mat.h"
 
-Suite*
+Suite *
 mat_suite()
 {
-    Suite* s;
+    Suite * s;
     TCase *tc_mat2x2, *tc_mat3x3, *tc_mat4x4;
 
     s = suite_create("Matricies");
@@ -24,11 +24,11 @@ mat_suite()
 }
 
 int
-main(int argc, char** argv)
+main(int argc, char ** argv)
 {
     int number_failed;
-    Suite* s;
-    SRunner* sr;
+    Suite * s;
+    SRunner * sr;
 
     s = mat_suite();
     sr = srunner_create(s);

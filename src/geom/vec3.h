@@ -17,6 +17,8 @@ typedef union Vec3
 
 } Vec3;
 
+extern Vec3 Vec3Zero;
+
 void Vec3_Print(const Vec3* vec);
 
 bool Vec3_Equals(const Vec3* vecA, const Vec3* vecB);

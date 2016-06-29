@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <math.h>
 
+Vec3 Vec3Zero = { { 0.0f, 0.0f, 0.0f } };
+
 void
 Vec3_Print(const Vec3* vec)
 {
