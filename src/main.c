@@ -51,32 +51,6 @@ main(int argc, char * argv[])
 
     glUseProgram(prog);
 
-    Vec3 testVec = { { 0.0f, 1.0f, 2.0f } };
-    Vec3_Print(&testVec);
-
-    testVec.data[0] = 5.0f;
-    testVec.data[1] = 4.0f;
-    testVec.data[2] = 3.0f;
-    Vec3_Print(&testVec);
-
-    testVec.x = 3.0f;
-    testVec.y = 2.0f;
-    testVec.z = 1.0f;
-    Vec3_Print(&testVec);
-
-    Vec3_Normalize(&testVec);
-    Vec3_Print(&testVec);
-
-    testVec.x = testVec.y = testVec.z = 0.0f;
-    Vec3 testVec2 = { { 0.0f, 0.0f, 1.0f } };
-    float dist = Vec3_Distance(&testVec, &testVec2);
-    printf("dist %f\n", dist);
-
-    Mat3 testMat = { {
-        { 1.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f },
-    } };
-    Mat3x3_Print(&testMat);
-
     glutDisplayFunc(Render);
     glutMainLoop();
 

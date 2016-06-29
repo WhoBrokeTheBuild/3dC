@@ -17,7 +17,7 @@ typedef union Vec2 {
 
 } Vec2;
 
-extern Vec2 Vec2Zero;
+extern Vec2 Vec2_ZERO;
 
 void Vec2_Print(const Vec2 * vec);
 

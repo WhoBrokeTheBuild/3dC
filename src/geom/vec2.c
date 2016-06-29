@@ -4,10 +4,10 @@
 #include <math.h>
 #include <assert.h>
 
-Vec2 Vec2Zero = { { 0.0f, 0.0f } };
+Vec2 Vec2_ZERO = { { 0.0f, 0.0f } };
 
 void
-Vec2_Print(const Vec2* vec)
+Vec2_Print(const Vec2 * vec)
 {
     assert(vec != NULL);
 
@@ -15,7 +15,7 @@ Vec2_Print(const Vec2* vec)
 }
 
 bool
-Vec2_Equals(const Vec2* vecA, const Vec2* vecB)
+Vec2_Equals(const Vec2 * vecA, const Vec2 * vecB)
 {
     assert(vecA != NULL);
     assert(vecB != NULL);
@@ -24,7 +24,7 @@ Vec2_Equals(const Vec2* vecA, const Vec2* vecB)
 }
 
 float
-Vec2_Length(const Vec2* vec)
+Vec2_Length(const Vec2 * vec)
 {
     assert(vec != NULL);
 
@@ -32,7 +32,7 @@ Vec2_Length(const Vec2* vec)
 }
 
 float
-Vec2_Distance(const Vec2* vecA, const Vec2* vecB)
+Vec2_Distance(const Vec2 * vecA, const Vec2 * vecB)
 {
     assert(vecA != NULL);
     assert(vecB != NULL);
@@ -42,7 +42,7 @@ Vec2_Distance(const Vec2* vecA, const Vec2* vecB)
 }
 
 void
-Vec2_AddVec2(Vec2* vecA, const Vec2* vecB)
+Vec2_AddVec2(Vec2 * vecA, const Vec2 * vecB)
 {
     assert(vecA != NULL);
     assert(vecB != NULL);
@@ -52,7 +52,7 @@ Vec2_AddVec2(Vec2* vecA, const Vec2* vecB)
 }
 
 Vec2
-Vec2_GetAddVec2(const Vec2* vecA, const Vec2* vecB)
+Vec2_GetAddVec2(const Vec2 * vecA, const Vec2 * vecB)
 {
     assert(vecA != NULL);
     assert(vecB != NULL);
@@ -63,7 +63,7 @@ Vec2_GetAddVec2(const Vec2* vecA, const Vec2* vecB)
 }
 
 void
-Vec2_AddScalar(Vec2* vec, float scalar)
+Vec2_AddScalar(Vec2 * vec, float scalar)
 {
     assert(vec != NULL);
 
@@ -72,7 +72,7 @@ Vec2_AddScalar(Vec2* vec, float scalar)
 }
 
 Vec2
-Vec2_GetAddScalar(const Vec2* vec, float scalar)
+Vec2_GetAddScalar(const Vec2 * vec, float scalar)
 {
     assert(vec != NULL);
 
@@ -82,7 +82,7 @@ Vec2_GetAddScalar(const Vec2* vec, float scalar)
 }
 
 void
-Vec2_SubVec2(Vec2* vecA, const Vec2* vecB)
+Vec2_SubVec2(Vec2 * vecA, const Vec2 * vecB)
 {
     assert(vecA != NULL);
     assert(vecB != NULL);
@@ -92,7 +92,7 @@ Vec2_SubVec2(Vec2* vecA, const Vec2* vecB)
 }
 
 Vec2
-Vec2_GetSubVec2(const Vec2* vecA, const Vec2* vecB)
+Vec2_GetSubVec2(const Vec2 * vecA, const Vec2 * vecB)
 {
     assert(vecA != NULL);
     assert(vecB != NULL);
@@ -103,7 +103,7 @@ Vec2_GetSubVec2(const Vec2* vecA, const Vec2* vecB)
 }
 
 void
-Vec2_SubScalar(Vec2* vec, float scalar)
+Vec2_SubScalar(Vec2 * vec, float scalar)
 {
     assert(vec != NULL);
 
@@ -112,7 +112,7 @@ Vec2_SubScalar(Vec2* vec, float scalar)
 }
 
 Vec2
-Vec2_GetSubScalar(const Vec2* vec, float scalar)
+Vec2_GetSubScalar(const Vec2 * vec, float scalar)
 {
     assert(vec != NULL);
 
@@ -122,7 +122,7 @@ Vec2_GetSubScalar(const Vec2* vec, float scalar)
 }
 
 void
-Vec2_Dot(Vec2* vecA, const Vec2* vecB)
+Vec2_Dot(Vec2 * vecA, const Vec2 * vecB)
 {
     assert(vecA != NULL);
     assert(vecB != NULL);
@@ -132,7 +132,7 @@ Vec2_Dot(Vec2* vecA, const Vec2* vecB)
 }
 
 Vec2
-Vec2_GetDot(const Vec2* vecA, const Vec2* vecB)
+Vec2_GetDot(const Vec2 * vecA, const Vec2 * vecB)
 {
     assert(vecA != NULL);
     assert(vecB != NULL);
@@ -143,7 +143,7 @@ Vec2_GetDot(const Vec2* vecA, const Vec2* vecB)
 }
 
 void
-Vec2_Normalize(Vec2* vec)
+Vec2_Normalize(Vec2 * vec)
 {
     assert(vec != NULL);
 
@@ -153,7 +153,7 @@ Vec2_Normalize(Vec2* vec)
 }
 
 Vec2
-Vec2_GetNormalize(const Vec2* vec)
+Vec2_GetNormalize(const Vec2 * vec)
 {
     assert(vec != NULL);
 

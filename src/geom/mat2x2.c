@@ -20,5 +20,6 @@ Mat2x2_Equals(Mat2x2 * matA, Mat2x2 * matB)
     assert(matA != NULL);
     assert(matB != NULL);
 
-    return (Vec2_Equals(&(matA->vecs[0]), &(matB->vecs[0])) && Vec2_Equals(&(matA->vecs[1]), &(matB->vecs[1])));
+    return (Vec2_Equals(&(matA->vecs[0]), &(matB->vecs[0]))
+        && Vec2_Equals(&(matA->vecs[1]), &(matB->vecs[1])));
 }
