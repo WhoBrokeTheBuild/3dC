@@ -5,6 +5,8 @@
 #include "material.h"
 #include "shape.h"
 
+struct Material;
+
 typedef struct OBJ {
     Shape ** shapes;
     Material ** materials;
