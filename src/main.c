@@ -52,7 +52,7 @@ main(int argc, char * argv[])
 
     glUseProgram(prog);
 
-    OBJ * cube = OBJ_Load("assets/cube.obj");
+    OBJ * cube = OBJ_Load("assets/tower_bridge/tower bridge.obj");
     OBJ_Destroy(cube);
 
     glutDisplayFunc(Render);

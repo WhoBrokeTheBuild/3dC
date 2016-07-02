@@ -2,8 +2,10 @@
 #define UTIL_H
 
 #include <stdio.h>
+#include <stdbool.h>
 
-#include <debug.h>
+bool TryParseFloat(float * tmp, const char * str, char ** endptr);
+float ParseFloat(const char * str, char ** endptr);
 
 long int GetFileSize(FILE * fp);
 

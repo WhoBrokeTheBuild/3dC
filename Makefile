@@ -64,7 +64,7 @@ install: all
 # Run the program normally
 
 run:
-	$(TARGET)
+	$(TARGET) | tee lastrun.log
 
 # Run the program through valgrind
 

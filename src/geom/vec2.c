@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>
+#include <util.h>
+#include <debug.h>
 
 Vec2 Vec2_ZERO = { { 0.0f, 0.0f } };
 
@@ -12,6 +14,33 @@ Vec2_Print(const Vec2 * vec)
     assert(vec != NULL);
 
     printf("[ %f %f ]\n", vec->x, vec->y);
+}
+
+void
+Vec2_Parse(Vec2 * vec, const char * str)
+{
+    assert(vec != NULL);
+    assert(str != NULL);
+
+    char * endptr;
+    CHECK(TryParseFloat(&(vec->x), str, &endptr), "Vec2 parsing failed");
+    CHECK(endptr != NULL, "Vec2 parsing failed");
+    CHECK(TryParseFloat(&(vec->y), endptr, NULL), "Vec2 parsing failed");
+
+    return;
+
+error:
+    *vec = Vec2_ZERO;
+}
+
+Vec2
+Vec2_GetParse(const char * str)
+{
+    assert(str != NULL);
+
+    Vec2 tmp;
+    Vec2_Parse(&tmp, str);
+    return tmp;
 }
 
 bool

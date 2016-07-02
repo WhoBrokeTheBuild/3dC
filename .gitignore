@@ -66,6 +66,7 @@ tags
 /obj
 /.dep
 /tests/*_test
+/lastrun.log
 
 # Visual Studio
 *.VC.*

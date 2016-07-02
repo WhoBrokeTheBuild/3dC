@@ -20,6 +20,8 @@ typedef union Vec2 {
 extern Vec2 Vec2_ZERO;
 
 void Vec2_Print(const Vec2 * vec);
+void Vec2_Parse(Vec2 * vec, const char * str);
+Vec2 Vec2_GetParse(const char * str);
 
 bool Vec2_Equals(const Vec2 * vecA, const Vec2 * vecB);
 
