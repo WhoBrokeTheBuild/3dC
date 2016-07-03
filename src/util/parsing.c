@@ -1,4 +1,4 @@
-#include "util.h"
+#include "parsing.h"
 
 #include <stdlib.h>
 #include <assert.h>
@@ -29,19 +29,4 @@ ParseFloat(const char * str, char ** endptr)
     float tmp;
     TryParseFloat(&tmp, str, endptr);
     return tmp;
-}
-
-long int
-GetFileSize(FILE * fp)
-{
-    CHECK(fp, "File isn't open");
-
-    fseek(fp, 0L, SEEK_END);
-    long int size = ftell(fp);
-    fseek(fp, 0L, SEEK_SET);
-    return size;
-
-error:
-
-    return -1;
 }

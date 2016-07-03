@@ -3,10 +3,12 @@
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>
-#include <util.h>
+#include <util/parsing.h>
 #include <debug.h>
 
 Vec3 Vec3_ZERO = { { 0.0f, 0.0f, 0.0f } };
+
+DYNARR_IMP(Vec3, Vec3, Vec3_ZERO);
 
 void
 Vec3_Print(const Vec3 * vec)

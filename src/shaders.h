@@ -6,9 +6,6 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#include <debug.h>
-#include <util.h>
-
 #define MAX_SHADER_COUNT 20
 #define MAX_SHADER_SIZE 1000000
 #define MAX_SHADER_LOG_SIZE 100000

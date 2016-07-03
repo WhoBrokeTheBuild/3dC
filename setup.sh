@@ -18,6 +18,18 @@ case $distro in
             freeglut-devel \
             glew-devel \
             check-devel
+        sudo dnf debuginfo-install -y \
+            freeglut \
+            libgcc \
+            libGLEW \
+            libICE \
+            libX11 \
+            libXau \
+            libxcb \
+            libXext \
+            libXi \
+            libXxf86vm \
+            mesa-libGLU
         ;;
     centos)
         sudo yum install -y \

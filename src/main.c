@@ -6,7 +6,6 @@ extern "C" {
 #include <stdbool.h>
 
 #include <debug.h>
-#include <util.h>
 #include <shaders.h>
 #include <geom/vec.h>
 #include <geom/mat.h>
@@ -52,8 +51,10 @@ main(int argc, char * argv[])
 
     glUseProgram(prog);
 
-    OBJ * cube = OBJ_Load("assets/tower_bridge/tower bridge.obj");
+    OBJ * cube = OBJ_Load("assets/stanford_dragon/dragon.obj");
     OBJ_Destroy(cube);
+
+    return 0;
 
     glutDisplayFunc(Render);
     glutMainLoop();

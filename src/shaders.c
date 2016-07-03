@@ -1,5 +1,8 @@
 #include "shaders.h"
 
+#include <debug.h>
+#include <util/file.h>
+
 bool
 PrintShaderProgramLog(GLuint program)
 {

@@ -2,6 +2,7 @@
 #define VEC3_H
 
 #include <stdbool.h>
+#include <util/dynarr.h>
 
 typedef union Vec3 {
     float data[3];
@@ -15,6 +16,8 @@ typedef union Vec3 {
 } Vec3;
 
 extern Vec3 Vec3_ZERO;
+
+DYNARR_DEF(Vec3, Vec3);
 
 void Vec3_Print(const Vec3 * vec);
 void Vec3_Parse(Vec3 * vec, const char * str);

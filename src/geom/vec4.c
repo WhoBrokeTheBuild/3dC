@@ -5,6 +5,8 @@
 
 Vec4 Vec4_ZERO = { { 0.0f, 0.0f, 0.0f } };
 
+DYNARR_IMP(Vec4, Vec4, Vec4_ZERO);
+
 void
 Vec4_Print(const Vec4 * vec)
 {

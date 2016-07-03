@@ -67,6 +67,7 @@ tags
 /.dep
 /tests/*_test
 /lastrun.log
+.gdbinit
 
 # Visual Studio
 *.VC.*

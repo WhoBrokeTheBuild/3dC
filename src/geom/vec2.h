@@ -2,6 +2,7 @@
 #define VEC2_H
 
 #include <stdbool.h>
+#include <util/dynarr.h>
 
 typedef union Vec2 {
     float data[2];
@@ -18,6 +19,8 @@ typedef union Vec2 {
 } Vec2;
 
 extern Vec2 Vec2_ZERO;
+
+DYNARR_DEF(Vec2, Vec2);
 
 void Vec2_Print(const Vec2 * vec);
 void Vec2_Parse(Vec2 * vec, const char * str);

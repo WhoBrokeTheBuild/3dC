@@ -46,20 +46,14 @@ OBJ_Load(const char * filename)
     obj = OBJ_Create();
     CHECK_MEM(obj);
 
-    int maxVertCount = 500;
-    int vertCount = 0;
-    Vec3 * verts = (Vec3 *)malloc(sizeof(Vec3) * maxVertCount);
-    CHECK_MEM(verts);
+    DynArrVec3 verts;
+    DynArrVec3_Init(&verts);
 
-    int maxNormCount = 500;
-    int normCount = 0;
-    Vec3 * norms = (Vec3 *)malloc(sizeof(Vec3) * maxNormCount);
-    CHECK_MEM(norms);
+    DynArrVec3 norms;
+    DynArrVec3_Init(&norms);
 
-    int maxTexcoordCount = 500;
-    int texcoordCount = 0;
-    Vec2 * texcoords = (Vec2 *)malloc(sizeof(Vec2) * maxTexcoordCount);
-    CHECK_MEM(texcoords);
+    DynArrVec2 texcoords;
+    DynArrVec2_Init(&texcoords);
 
     char linebuf[LINE_BUFFER_SIZE];
     while (fgets(linebuf, LINE_BUFFER_SIZE, fp) != NULL) {
@@ -84,78 +78,51 @@ OBJ_Load(const char * filename)
         if (line[0] == '#') // Comment
             continue;
 
-        // Resize if necessary
-
-        if (vertCount >= maxVertCount) {
-            maxVertCount *= 2;
-            void * tmp = realloc(verts, sizeof(Vec3) * maxVertCount);
-            CHECK_MEM(tmp);
-            verts = (Vec3 *)tmp;
-        }
-
-        if (normCount >= maxNormCount) {
-            maxNormCount *= 2;
-            void * tmp = realloc(norms, sizeof(Vec3) * maxNormCount);
-            CHECK_MEM(tmp);
-            norms = (Vec3 *)tmp;
-        }
-
-        if (texcoordCount >= maxTexcoordCount) {
-            maxTexcoordCount *= 2;
-            void * tmp = realloc(texcoords, sizeof(Vec2) * maxTexcoordCount);
-            CHECK_MEM(tmp);
-            texcoords = (Vec2 *)tmp;
-        }
-
         if (len > 2 && line[0] == 'v' && IS_SPACE(line[1])) {
             line += 2;
-            Vec3_Parse(&verts[vertCount++], line);
+            DynArrVec3_Append(&verts, Vec3_GetParse(line));
             continue;
         }
 
         if (len > 2 && line[0] == 'v' && line[1] == 'n') {
             line += 2;
-            Vec3_Parse(&norms[normCount++], line);
+            DynArrVec3_Append(&norms, Vec3_GetParse(line));
             continue;
         }
 
         if (len > 2 && line[0] == 'v' && line[1] == 't') {
             line += 2;
-            Vec2_Parse(&texcoords[texcoordCount++], line);
+            DynArrVec2_Append(&texcoords, Vec2_GetParse(line));
             continue;
         }
     }
 
     // Shrink to just what we need
 
-    verts = (Vec3 *)realloc(verts, sizeof(Vec3) * vertCount);
-    norms = (Vec3 *)realloc(norms, sizeof(Vec3) * normCount);
-    texcoords = (Vec2 *)realloc(texcoords, sizeof(Vec2) * texcoordCount);
-
-    printf("Vertices %d\n", vertCount);
-    for (int i = 0; i < vertCount; ++i) {
-        Vec3_Print(&verts[i]);
+    printf("Vertices %d\n", verts.size);
+    for (int i = 0; i < verts.size; ++i) {
+        Vec3_Print(&(verts.data[i]));
     }
-    printf("Normals %d\n", normCount);
-    for (int i = 0; i < normCount; ++i) {
-        Vec3_Print(&norms[i]);
+    printf("Normals %d\n", norms.size);
+    for (int i = 0; i < norms.size; ++i) {
+        Vec3_Print(&(norms.data[i]));
     }
-    printf("TexCoords %d\n", texcoordCount);
-    for (int i = 0; i < texcoordCount; ++i) {
-        Vec2_Print(&texcoords[i]);
+    printf("TexCoords %d\n", texcoords.size);
+    for (int i = 0; i < texcoords.size; ++i) {
+        Vec2_Print(&(texcoords.data[i]));
     }
 
-    free(verts);
-    free(norms);
-    free(texcoords);
+    DynArrVec3_Free(&verts);
+    DynArrVec3_Free(&norms);
+    DynArrVec2_Free(&texcoords);
 
     fclose(fp);
     return obj;
 
 error:
-    free(verts);
-    free(norms);
-    free(texcoords);
+    DynArrVec3_Free(&verts);
+    DynArrVec3_Free(&norms);
+    DynArrVec2_Free(&texcoords);
 
     fclose(fp);
     OBJ_Destroy(obj);
