@@ -19,6 +19,8 @@ extern Vec3 Vec3_ZERO;
 
 DYNARR_DEF(Vec3, Vec3);
 
+Vec3 Vec3_Create(float x, float y, float z);
+
 void Vec3_Print(const Vec3 * vec);
 void Vec3_Parse(Vec3 * vec, const char * str);
 Vec3 Vec3_GetParse(const char * str);
@@ -38,11 +40,13 @@ void Vec3_SubScalar(Vec3 * vecA, float scalar);
 Vec3 Vec3_GetSubVec3(const Vec3 * vecA, const Vec3 * vecB);
 Vec3 Vec3_GetSubScalar(const Vec3 * vec, float scalar);
 
+void Vec3_MultScalar(Vec3 * this, float scalar);
+Vec3 Vec3_GetMultScalar(const Vec3 * this, float scalar);
+
 void Vec3_Cross(Vec3 * vecA, const Vec3 * vecB);
 Vec3 Vec3_GetCross(const Vec3 * vecA, const Vec3 * vecB);
 
-void Vec3_Dot(Vec3 * vecA, const Vec3 * vecB);
-Vec3 Vec3_GetDot(const Vec3 * vecA, const Vec3 * vecB);
+float Vec3_Dot(const Vec3 * vecA, const Vec3 * vecB);
 
 void Vec3_Normalize(Vec3 * vec);
 Vec3 Vec3_GetNormalize(const Vec3 * vec);

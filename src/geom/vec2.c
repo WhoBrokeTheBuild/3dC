@@ -152,25 +152,13 @@ Vec2_GetSubScalar(const Vec2 * vec, float scalar)
     return tmp;
 }
 
-void
-Vec2_Dot(Vec2 * vecA, const Vec2 * vecB)
+float
+Vec2_Dot(const Vec2 * vecA, const Vec2 * vecB)
 {
     assert(vecA != NULL);
     assert(vecB != NULL);
 
-    vecA->x = (vecA->x * vecB->x);
-    vecA->y = (vecA->y * vecB->y);
-}
-
-Vec2
-Vec2_GetDot(const Vec2 * vecA, const Vec2 * vecB)
-{
-    assert(vecA != NULL);
-    assert(vecB != NULL);
-
-    Vec2 tmp = *vecA;
-    Vec2_Dot(&tmp, vecB);
-    return tmp;
+    return vecA->x * vecB->x + vecA->y * vecB->y;
 }
 
 void

@@ -41,8 +41,7 @@ void Vec2_SubScalar(Vec2 * vecA, float scalar);
 Vec2 Vec2_GetSubVec2(const Vec2 * vecA, const Vec2 * vecB);
 Vec2 Vec2_GetSubScalar(const Vec2 * vec, float scalar);
 
-void Vec2_Dot(Vec2 * vecA, const Vec2 * vecB);
-Vec2 Vec2_GetDot(const Vec2 * vecA, const Vec2 * vecB);
+float Vec2_Dot(const Vec2 * vecA, const Vec2 * vecB);
 
 void Vec2_Normalize(Vec2 * vec);
 Vec2 Vec2_GetNormalize(const Vec2 * vec);

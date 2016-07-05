@@ -10,6 +10,13 @@ Vec3 Vec3_ZERO = { { 0.0f, 0.0f, 0.0f } };
 
 DYNARR_IMP(Vec3, Vec3, Vec3_ZERO);
 
+Vec3
+Vec3_Create(float x, float y, float z)
+{
+    Vec3 tmp = { { x, y, z } };
+    return tmp;
+}
+
 void
 Vec3_Print(const Vec3 * vec)
 {
@@ -159,6 +166,22 @@ Vec3_GetSubScalar(const Vec3 * vec, float scalar)
 }
 
 void
+Vec3_MultScalar(Vec3 * this, float scalar)
+{
+    this->x *= scalar;
+    this->y *= scalar;
+    this->z *= scalar;
+}
+
+Vec3
+Vec3_GetMultScalar(const Vec3 * this, float scalar)
+{
+    Vec3 tmp = *this;
+    Vec3_MultScalar(&tmp, scalar);
+    return tmp;
+}
+
+void
 Vec3_Cross(Vec3 * vecA, const Vec3 * vecB)
 {
     assert(vecA != NULL);
@@ -181,26 +204,13 @@ Vec3_GetCross(const Vec3 * vecA, const Vec3 * vecB)
     return tmp;
 }
 
-void
-Vec3_Dot(Vec3 * vecA, const Vec3 * vecB)
+float
+Vec3_Dot(const Vec3 * vecA, const Vec3 * vecB)
 {
     assert(vecA != NULL);
     assert(vecB != NULL);
 
-    vecA->x = (vecA->x * vecB->x);
-    vecA->y = (vecA->y * vecB->y);
-    vecA->z = (vecA->z * vecB->z);
-}
-
-Vec3
-Vec3_GetDot(const Vec3 * vecA, const Vec3 * vecB)
-{
-    assert(vecA != NULL);
-    assert(vecB != NULL);
-
-    Vec3 tmp = *vecA;
-    Vec3_Dot(&tmp, vecB);
-    return tmp;
+    return vecA->x * vecB->x + vecA->y * vecB->y + vecA->z * vecB->z;
 }
 
 void
