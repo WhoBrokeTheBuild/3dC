@@ -98,6 +98,9 @@ OBJ_Load(const char * filename)
     }
 
     // Shrink to just what we need
+    DynArrVec3_Shrink(&verts);
+    DynArrVec3_Shrink(&norms);
+    DynArrVec2_Shrink(&texcoords);
 
     printf("Vertices %d\n", verts.size);
     for (int i = 0; i < verts.size; ++i) {

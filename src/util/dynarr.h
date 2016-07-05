@@ -18,6 +18,7 @@
     void DynArr##NAME##_Append(DynArr##NAME *, TYPE);                                              \
     TYPE DynArr##NAME##_Get(DynArr##NAME *, int);                                                  \
     void DynArr##NAME##_Set(DynArr##NAME *, int, TYPE);                                            \
+    void DynArr##NAME##_Shrink(DynArr##NAME *);                                                    \
     void DynArr##NAME##_DoubleIfFull(DynArr##NAME *);
 
 #define DYNARR_IMP(NAME, TYPE, NULLVAL)                                                            \
@@ -68,12 +69,26 @@
         da->data[index] = val;                                                                     \
     }                                                                                              \
                                                                                                    \
+    void DynArr##NAME##_Shrink(DynArr##NAME * da)                                                  \
+    {                                                                                              \
+        da->capacity = da->size;                                                                   \
+        if (da->capacity <= 0)                                                                     \
+            da->capacity = 1;                                                                      \
+        TYPE * tmp = (TYPE *)realloc(da->data, sizeof(TYPE) * da->capacity);                       \
+        CHECK_MEM(tmp);                                                                            \
+        da->data = tmp;                                                                            \
+                                                                                                   \
+        return;                                                                                    \
+                                                                                                   \
+    error:                                                                                         \
+        DynArr##NAME##_Free(da);                                                                   \
+    }                                                                                              \
+                                                                                                   \
     void DynArr##NAME##_DoubleIfFull(DynArr##NAME * da)                                            \
     {                                                                                              \
         if (da->size >= da->capacity) {                                                            \
             da->capacity *= 2;                                                                     \
             TYPE * tmp = (TYPE *)realloc(da->data, sizeof(TYPE) * da->capacity);                   \
-            CHECK_MEM(da->data);                                                                   \
             CHECK_MEM(tmp);                                                                        \
             da->data = tmp;                                                                        \
         }                                                                                          \
