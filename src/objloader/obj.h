@@ -3,20 +3,16 @@
 
 #include <stdbool.h>
 #include <geom/vec.h>
-#include <objloader/mesh.h>
-#include <objloader/material.h>
 
-struct Material;
+bool Material_Init(Material * this);
+void Material_Term(Material * this);
 
-typedef struct OBJ {
-    Mesh * meshes;
-    Material * materials;
+bool Mesh_Init(Mesh * this);
+void Mesh_Term(Mesh * this);
 
-} OBJ;
+bool Shape_Init(Shape * this);
+void Shape_Term(Shape * this);
 
-bool OBJ_Init(OBJ * this);
-void OBJ_Term(OBJ * this);
-
-bool OBJ_Load(OBJ * this, const char * filename);
+bool LoadOBJ(const char * filename);
 
 #endif // OBJ_H

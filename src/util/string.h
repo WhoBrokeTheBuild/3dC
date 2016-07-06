@@ -6,6 +6,4 @@
 
 char * StrDuplicate(const char * str, size_t maxLen);
 
-DYNARR_DEF(Str, char *);
-
 #endif // UTIL_STRING_H

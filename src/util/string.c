@@ -2,8 +2,6 @@
 
 #include <string.h>
 
-DYNARR_IMP(Str, char *, NULL);
-
 char *
 StrDuplicate(const char * str, size_t maxLen)
 {
