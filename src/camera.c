@@ -1,29 +1,79 @@
 #include "camera.h"
 
+#include <assert.h>
+
+void
+Camera_Init(Camera * this, float width, float height, const Vec3 pos, const Vec3 dir, const Vec3 up,
+    float fov, float near, float far)
+{
+    assert(this != NULL);
+
+    this->pos = Vec3_ZERO;
+    this->dir = Vec3_ZERO;
+    this->up = Vec3_ZERO;
+
+    this->_projUpdated = true;
+
+    this->_fov = fov;
+    this->_aspectWidth = width;
+    this->_aspectHeight = height;
+    this->_near = near;
+    this->_far = far;
+    this->_pitch = 0.0f;
+    this->_yaw = 0.0f;
+
+    this->_lookAt = Vec3_ZERO;
+
+    this->_view = Mat4x4_IDENTITY;
+    this->_proj = Mat4x4_IDENTITY;
+
+    this->_orient = Quat_ZERO;
+}
+
+void
+Camera_Term(Camera * this)
+{
+    if (!this)
+        return;
+}
+
+Mat4x4
+Camera_GetProjMatrix(Camera * this)
+{
+    if (!this->_projUpdated)
+        return this->_proj;
+
+    if (this->_aspectWidth <= 0.0f || this->_aspectHeight <= 0.0f || this->_fov <= 0.0f)
+        return Mat4x4_IDENTITY;
+
+    // this->_proj;
+
+    this->_projUpdated = false;
+    return this->_proj;
+}
+
 Mat4x4
 Camera_GetViewMatrix(Camera * this)
 {
-    this->m_Dir = this->m_LookAt;
-    Vec3_SubVec3(&this->m_Dir, &this->m_Pos);
-    Vec3_Normalize(&this->m_Dir);
+    this->dir = this->_lookAt;
+    Vec3_SubVec3(&this->dir, &this->pos);
+    Vec3_Normalize(&this->dir);
 
-    Vec3 pitchAxis = Vec3_GetCross(&this->m_Dir, &this->m_Up);
+    Vec3 pitchAxis = Vec3_GetCross(&this->dir, &this->up);
 
-    Quat pitchQ = Quat_CreateFromAngleAxis(this->m_Pitch, &pitchAxis);
-    Quat yawQ = Quat_CreateFromAngleAxis(this->m_Yaw, &this->m_Up);
+    Quat pitchQ = Quat_CreateFromAngleAxis(this->_pitch, &pitchAxis);
+    Quat yawQ = Quat_CreateFromAngleAxis(this->_yaw, &this->up);
 
     Quat tmp = Quat_GetCross(&pitchQ, &yawQ);
     Quat_Normalize(&tmp);
 
-    this->m_Dir = Quat_RotateVec3(&tmp, &this->m_Dir);
-    Vec3_AddVec3(&this->m_Pos, &this->m_PosDelta);
+    this->dir = Quat_RotateVec3(&tmp, &this->dir);
 
-    this->m_LookAt = Vec3_GetAddVec3(&this->m_Pos, &this->m_Dir);
-    this->m_View = Mat4x4_LookAt(&this->m_Pos, &this->m_LookAt, &this->m_Up);
+    this->_lookAt = Vec3_GetAddVec3(&this->pos, &this->dir);
+    this->_view = Mat4x4_LookAt(&this->pos, &this->_lookAt, &this->up);
 
-    this->m_Pitch *= 0.5f;
-    this->m_Yaw *= 0.5f;
-    Vec3_MultScalar(&this->m_PosDelta, 0.8f);
+    this->_pitch *= 0.5f;
+    this->_yaw *= 0.5f;
 
-    return this->m_View;
+    return this->_view;
 }

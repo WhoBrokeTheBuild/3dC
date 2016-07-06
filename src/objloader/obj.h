@@ -1,20 +1,22 @@
 #ifndef OBJ_H
 #define OBJ_H
 
+#include <stdbool.h>
 #include <geom/vec.h>
-#include "material.h"
-#include "shape.h"
+#include <objloader/mesh.h>
+#include <objloader/material.h>
 
 struct Material;
 
 typedef struct OBJ {
-    Shape ** shapes;
-    Material ** materials;
+    Mesh * meshes;
+    Material * materials;
 
 } OBJ;
 
-OBJ * OBJ_Create();
-void OBJ_Destroy(OBJ * obj);
-OBJ * OBJ_Load(const char * filename);
+bool OBJ_Init(OBJ * this);
+void OBJ_Term(OBJ * this);
+
+bool OBJ_Load(OBJ * this, const char * filename);
 
 #endif // OBJ_H

@@ -7,31 +7,34 @@
 
 typedef struct Camera {
 
-    bool m_ProjUpdated;
+    Vec3 pos;
+    Vec3 dir;
+    Vec3 up;
 
-    float m_FOV;
-    float m_AspectWidth;
-    float m_AspectHeight;
-    float m_Near;
-    float m_Far;
-    float m_Pitch;
-    float m_Yaw;
+    bool _projUpdated;
 
-    Mat4x4 m_View;
-    Mat4x4 m_Proj;
+    float _fov;
+    float _aspectWidth;
+    float _aspectHeight;
+    float _near;
+    float _far;
+    float _pitch;
+    float _yaw;
 
-    Vec3 m_Pos;
-    Vec3 m_Dir;
-    Vec3 m_Up;
-    Vec3 m_LookAt;
-    Vec3 m_PosDelta;
+    Vec3 _lookAt;
 
-    Quat m_Orient;
+    Mat4x4 _view;
+    Mat4x4 _proj;
+
+    Quat _orient;
 
 } Camera;
 
-void Camera_Init(Camera * this);
+void Camera_Init(Camera * this, float width, float height, const Vec3 pos, const Vec3 dir,
+    const Vec3 up, float fov, float near, float far);
+void Camera_Term(Camera * this);
 
+Mat4x4 Camera_GetProjMatrix(Camera * this);
 Mat4x4 Camera_GetViewMatrix(Camera * this);
 
 #endif // CAMERA_H

@@ -12,6 +12,8 @@ typedef union Quat {
     };
 } Quat;
 
+extern Quat Quat_ZERO;
+
 Quat Quat_Create(float w, float x, float y, float z);
 
 bool Quat_Equals(const Quat * this, const Quat * other);

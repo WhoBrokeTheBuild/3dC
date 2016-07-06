@@ -3,6 +3,8 @@
 #include <math.h>
 #include <assert.h>
 
+Quat Quat_ZERO = { { 0.0f, 0.0f, 0.0f, 0.0f } };
+
 Quat
 Quat_Create(float w, float x, float y, float z)
 {

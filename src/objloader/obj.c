@@ -3,57 +3,78 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 #include <debug.h>
+#include <util/string.h>
 
 #define LINE_BUFFER_SIZE (4096)
+#define MAX_SHAPE_NAME_LEN (256)
 
 #define IS_SPACE(x) (((x) == ' ') || ((x) == '\t'))
 #define IS_DIGIT(x) ((unsigned int)((x) - '0') < (unsigned int)10)
 #define IS_NEW_LINE(x) (((x) == '\r') || ((x) == '\n') || ((x) == '\0'))
 
-OBJ *
-OBJ_Create()
+int
+FixIndex(int index, int vertCount)
 {
-    OBJ * obj = (OBJ *)malloc(sizeof(OBJ));
-    CHECK_MEM(obj);
+    if (index > 0)
+        return index - 1;
+    if (index == 0)
+        return 0;
+    return vertCount + index; // negative value = relative
+}
 
-    return obj;
+bool
+OBJ_Init(OBJ * this)
+{
+    CHECK(this != NULL, "OBJ is null");
+
+    this->meshes = NULL;
+    this->materials = NULL;
+
+    return true;
 
 error:
-    OBJ_Destroy(obj);
+    OBJ_Term(this);
 
-    return NULL;
+    return false;
 }
 
 void
-OBJ_Destroy(OBJ * obj)
+OBJ_Term(OBJ * this)
 {
-    if (!obj)
+    if (!this)
         return;
-
-    free(obj);
 }
 
-OBJ *
-OBJ_Load(const char * filename)
+bool
+OBJ_Load(OBJ * this, const char * filename)
 {
+    OBJ_Init(this);
+
     FILE * fp = NULL;
-    OBJ * obj = NULL;
 
     fp = fopen(filename, "r");
     CHECK(!feof(fp), "Failed to open file %s", filename);
 
-    obj = OBJ_Create();
-    CHECK_MEM(obj);
+    char * shapeName = NULL;
 
-    DynArrVec3 verts;
-    DynArrVec3_Init(&verts);
+    DynArrMesh meshes;
+    DynArrMesh_Init(&meshes);
 
-    DynArrVec3 norms;
-    DynArrVec3_Init(&norms);
+    DynArrVec3 allVerts;
+    DynArrVec3_Init(&allVerts);
+    DynArrVec3 allNorms;
+    DynArrVec3_Init(&allNorms);
+    DynArrVec2 allTexcoords;
+    DynArrVec2_Init(&allTexcoords);
 
-    DynArrVec2 texcoords;
-    DynArrVec2_Init(&texcoords);
+    DynArrVec3 curVerts;
+    DynArrVec3_Init(&curVerts);
+    DynArrVec3 curNorms;
+    DynArrVec3_Init(&curNorms);
+    DynArrVec2 curTexcoords;
+    DynArrVec2_Init(&curTexcoords);
 
     char linebuf[LINE_BUFFER_SIZE];
     while (fgets(linebuf, LINE_BUFFER_SIZE, fp) != NULL) {
@@ -78,57 +99,125 @@ OBJ_Load(const char * filename)
         if (line[0] == '#') // Comment
             continue;
 
-        if (len > 2 && line[0] == 'v' && IS_SPACE(line[1])) {
+        if (line[0] == 'v' && IS_SPACE(line[1])) {
             line += 2;
-            DynArrVec3_Append(&verts, Vec3_GetParse(line));
+            DynArrVec3_Append(&allVerts, Vec3_GetParse(line));
             continue;
         }
 
-        if (len > 2 && line[0] == 'v' && line[1] == 'n') {
+        if (line[0] == 'v' && line[1] == 'n' && IS_SPACE(line[2])) {
             line += 2;
-            DynArrVec3_Append(&norms, Vec3_GetParse(line));
+            DynArrVec3_Append(&allNorms, Vec3_GetParse(line));
             continue;
         }
 
-        if (len > 2 && line[0] == 'v' && line[1] == 't') {
+        if (line[0] == 'v' && line[1] == 't' && IS_SPACE(line[2])) {
             line += 2;
-            DynArrVec2_Append(&texcoords, Vec2_GetParse(line));
+            DynArrVec2_Append(&allTexcoords, Vec2_GetParse(line));
             continue;
         }
+
+        if (line[0] == 'f' && IS_SPACE(line[1])) {
+            line += 2;
+            line += strspn(line, " \t");
+
+            int vertInd = -1;
+            int normInd = -1;
+            int texcoordInd = -1;
+
+            // handles i, i/j/k, i//k, i/j
+            while (!IS_NEW_LINE(line[0])) {
+                vertInd = FixIndex(atoi(line), allVerts.size);
+
+                // i
+                line += strcspn(line, "/ \t\r");
+                if (line[0] != '/') {
+                    break;
+                }
+                ++line;
+
+                // i//k
+                if (line[0] == '/') {
+                    ++line;
+                    normInd = FixIndex(atoi(line), allNorms.size);
+                    break;
+                }
+
+                // i/j/k or i/j
+                texcoordInd = FixIndex(atoi(line), allTexcoords.size);
+                line += strcspn(line, "/ \t\r");
+                if (line[0] != '/') {
+                    break;
+                }
+
+                // i/j/k
+                ++line; // skip '/'
+                FixIndex(atoi(line), allNorms.size);
+                break;
+            }
+        }
+
+        if (line[0] == 'o' || line[0] == 'g') {
+            line += 2;
+            line += strspn(line, " \t");
+
+            if (shapeName) {
+                free(shapeName);
+                shapeName = NULL;
+            }
+
+            shapeName = StrDuplicate(line, MAX_SHAPE_NAME_LEN);
+            printf("Shape: %s\n", shapeName);
+
+            continue;
+        }
+
+        printf("Warning: Ignored line '%s'\n", line);
     }
+
+    free(shapeName);
 
     // Shrink to just what we need
-    DynArrVec3_Shrink(&verts);
-    DynArrVec3_Shrink(&norms);
-    DynArrVec2_Shrink(&texcoords);
+    DynArrVec3_Shrink(&allVerts);
+    DynArrVec3_Shrink(&allNorms);
+    DynArrVec2_Shrink(&allTexcoords);
 
-    printf("Vertices %d\n", verts.size);
-    for (int i = 0; i < verts.size; ++i) {
-        Vec3_Print(&(verts.data[i]));
-    }
-    printf("Normals %d\n", norms.size);
-    for (int i = 0; i < norms.size; ++i) {
-        Vec3_Print(&(norms.data[i]));
-    }
-    printf("TexCoords %d\n", texcoords.size);
-    for (int i = 0; i < texcoords.size; ++i) {
-        Vec2_Print(&(texcoords.data[i]));
-    }
+    printf("Vertices %d\n", allVerts.size);
+    // for (int i = 0; i < allVerts.size; ++i) {
+    //    Vec3_Print(&(allVerts.data[i]));
+    //}
+    printf("Normals %d\n", allNorms.size);
+    // for (int i = 0; i < allNorms.size; ++i) {
+    //    Vec3_Print(&(allNorms.data[i]));
+    //}
+    printf("TexCoords %d\n", allTexcoords.size);
+    // for (int i = 0; i < allTexcoords.size; ++i) {
+    //    Vec2_Print(&(allTexcoords.data[i]));
+    //}
 
-    DynArrVec3_Free(&verts);
-    DynArrVec3_Free(&norms);
-    DynArrVec2_Free(&texcoords);
+    DynArrVec3_Free(&curVerts);
+    DynArrVec3_Free(&curNorms);
+    DynArrVec2_Free(&curTexcoords);
+
+    DynArrVec3_Free(&allVerts);
+    DynArrVec3_Free(&allNorms);
+    DynArrVec2_Free(&allTexcoords);
+
+    DynArrMesh_Free(&meshes);
 
     fclose(fp);
-    return obj;
+    return true;
 
 error:
-    DynArrVec3_Free(&verts);
-    DynArrVec3_Free(&norms);
-    DynArrVec2_Free(&texcoords);
+    DynArrVec3_Free(&curVerts);
+    DynArrVec3_Free(&curNorms);
+    DynArrVec2_Free(&curTexcoords);
+
+    DynArrVec3_Free(&allVerts);
+    DynArrVec3_Free(&allNorms);
+    DynArrVec2_Free(&allTexcoords);
 
     fclose(fp);
-    OBJ_Destroy(obj);
-
-    return NULL;
+    OBJ_Term(this);
+    return false;
 }

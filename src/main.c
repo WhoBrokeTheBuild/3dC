@@ -5,8 +5,10 @@ extern "C" {
 #include <stdio.h>
 #include <stdbool.h>
 
+#include <opengl.h>
 #include <debug.h>
 #include <shaders.h>
+#include <camera.h>
 #include <geom/vec.h>
 #include <geom/mat.h>
 #include <objloader/obj.h>
@@ -45,16 +47,21 @@ main(int argc, char * argv[])
     LOG_INFO("Running OpenGL Version %s", glGetString(GL_VERSION));
     LOG_INFO("Running OpenGL GLSL Version %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
-    ShaderInfo shaders[] = { { GL_VERTEX_SHADER, "shaders/PostProcessGodrayVS.glsl" },
-        { GL_FRAGMENT_SHADER, "shaders/PostProcessGodrayFS.glsl" }, { GL_NONE, NULL } };
+    ShaderInfo shaders[] = { { GL_VERTEX_SHADER, "shaders/test.vs.glsl" },
+        { GL_FRAGMENT_SHADER, "shaders/test.fs.glsl" }, { GL_NONE, NULL } };
     GLuint prog = LoadShaderProgram(shaders);
 
     glUseProgram(prog);
 
-    OBJ * cube = OBJ_Load("assets/stanford_dragon/dragon.obj");
-    OBJ_Destroy(cube);
+    Camera camera;
+    Camera_Init(&camera, 1024, 768, Vec3_Create(20.0f, 150.0f, 20.0f),
+        Vec3_Create(0.7f, 0.0f, 0.7f), Vec3_Create(0.0f, 1.0f, 0.0f), 45.0f, 0.1f, 10000.0f);
 
-    return 0;
+    OBJ cube;
+    CHECK(OBJ_Load(&cube, "assets/cube.obj"), "Failed to load cube");
+
+    Camera_Term(&camera);
+    OBJ_Term(&cube);
 
     glutDisplayFunc(Render);
     glutMainLoop();
@@ -62,6 +69,9 @@ main(int argc, char * argv[])
     return 0;
 
 error:
+
+    Camera_Term(&camera);
+    OBJ_Term(&cube);
 
     return 1;
 }

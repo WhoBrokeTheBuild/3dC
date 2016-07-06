@@ -1,8 +1,7 @@
 #ifndef SHADERS_H
 #define SHADERS_H
 
-#include <GL/glew.h>
-#include <GL/freeglut.h>
+#include <opengl.h>
 #include <stdio.h>
 #include <stdbool.h>
 
