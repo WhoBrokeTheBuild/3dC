@@ -6,7 +6,7 @@
 #include <util/parsing.h>
 #include <debug.h>
 
-Vec2 Vec2_ZERO = { { 0.0f, 0.0f } };
+const Vec2 Vec2_ZERO = { { 0.0f, 0.0f } };
 
 DYNARR_IMP(Vec2, Vec2, Vec2_ZERO);
 

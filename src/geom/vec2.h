@@ -18,7 +18,7 @@ typedef union Vec2 {
 
 } Vec2;
 
-extern Vec2 Vec2_ZERO;
+extern const Vec2 Vec2_ZERO;
 
 DYNARR_DEF(Vec2, Vec2);
 

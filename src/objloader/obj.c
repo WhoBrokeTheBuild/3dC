@@ -5,33 +5,20 @@
 #include <string.h>
 #include <assert.h>
 #include <debug.h>
-#include <util/types.h>
-#include <util/string.h>
+
+DYNARR_IMP(Material, Material, Material_EMPTY);
+DYNARR_IMP(Mesh, Mesh, Mesh_EMPTY);
+DYNARR_IMP(Shape, Shape, Shape_EMPTY);
+
+const Material Material_EMPTY = { NULL, Vec3_ZERO, Vec3_ZERO, Vec3_ZERO, Vec3_ZERO, 0.0f, 0.0f, 0.0f, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
+const Mesh Mesh_EMPTY = { };
+const Shape Shape_EMPTY = { };
 
 typedef struct {
-    std::string name;
-
-    Vec3 ambient;
-    Vec3 diffuse;
-    Vec3 specular;
-    Vec3 transmittance;
-    Vec3 emission;
-    float shininess;
-    float ior; // index of refraction
-    float dissolve; // 1 == opaque; 0 == fully transparent
-    // illumination model (see http://www.fileformat.info/format/material/)
-    int illum;
-
-    int dummy; // Suppress padding warning.
-
-    char * ambient_texname; // map_Ka
-    char * diffuse_texname; // map_Kd
-    char * specular_texname; // map_Ks
-    char * specular_highlight_texname; // map_Ns
-    char * bump_texname; // map_bump, bump
-    char * displacement_texname; // disp
-    char * alpha_texname; // map_d
-} Material;
+    int vertInd;
+    int normInd;
+    int texcrdInd;
+} VertexIndex;
 
 bool
 Material_Init(Material * this)
@@ -87,29 +74,14 @@ Material_Term(Material * this)
     this->alpha_texname = NULL;
 }
 
-typedef struct {
-    int vertInd;
-    int normInd;
-    int texcrdInd;
-} VertexIndex;
-
-typedef struct {
-    DynArrVec3 positions;
-    DynArrVec3 normals;
-    DynArrVec3 texcoords;
-    DynArrInt indices;
-    DynArrInt num_vertices; // The number of vertices per face. Up to 255.
-    DynArrInt material_ids; // per-face material ID
-} Mesh;
-
 bool
 Mesh_Init(Mesh * this)
 {
     CHECK(this, "Invalid Mesh");
 
-    DynArrVec3_Init(&this->positions);
+    DynArrVec3_Init(&this->verts);
     DynArrVec3_Init(&this->normals);
-    DynArrVec3_Init(&this->texcoords);
+    DynArrVec2_Init(&this->texcoords);
     DynArrInt_Init(&this->indices);
     DynArrInt_Init(&this->num_vertices);
     DynArrInt_Init(&this->material_ids);
@@ -127,25 +99,20 @@ Mesh_Term(Mesh * this)
     if (!this)
         return;
 
-    DynArrVec3_Free(&this->positions);
+    DynArrVec3_Free(&this->verts);
     DynArrVec3_Free(&this->normals);
-    DynArrVec3_Free(&this->texcoords);
-    DynArrInt_Free(&this->positions);
+    DynArrVec2_Free(&this->texcoords);
+    DynArrInt_Free(&this->indices);
     DynArrInt_Free(&this->num_vertices);
     DynArrInt_Free(&this->material_ids);
 }
-
-typedef struct {
-    char * name;
-    Mesh mesh;
-} Shape;
 
 bool
 Shape_Init(Shape * this)
 {
     CHECK(this, "Invalid Shape");
 
-    name = NULL;
+    this->name = NULL;
     CHECK(Mesh_Init(&this->mesh), "Unable to init Mesh");
 
     return true;
@@ -191,6 +158,19 @@ LoadOBJ(const char * filename)
     fp = fopen(filename, "r");
     CHECK(!feof(fp), "Failed to open file %s", filename);
 
+    DynArrShape shapes;
+    DynArrShape_Init(&shapes);
+
+    DynArrShape_Append(&shapes, Shape_EMPTY);
+
+    DynArrVec3 verts;
+    DynArrVec3 norms;
+    DynArrVec2 texcrds;
+
+    DynArrVec3_Init(&verts);
+    DynArrVec3_Init(&norms);
+    DynArrVec2_Init(&texcrds);
+
     char linebuf[LINE_BUFFER_SIZE];
     while (fgets(linebuf, LINE_BUFFER_SIZE, fp) != NULL) {
         char * line = linebuf;
@@ -216,19 +196,19 @@ LoadOBJ(const char * filename)
 
         if (line[0] == 'v' && IS_SPACE(line[1])) {
             line += 2;
-            Vec3 tmp = Vec3_GetParse(line);
+            DynArrVec3_Append(&mesh->verts, Vec3_GetParse(line));
             continue;
         }
 
         if (line[0] == 'v' && line[1] == 'n' && IS_SPACE(line[2])) {
             line += 2;
-            Vec3 tmp = Vec3_GetParse(line);
+            DynArrVec3_Append(&mesh->normals, Vec3_GetParse(line));
             continue;
         }
 
         if (line[0] == 'v' && line[1] == 't' && IS_SPACE(line[2])) {
             line += 2;
-            Vec2 tmp = Vec2_GetParse(line);
+            DynArrVec2_Append(&mesh->texcoords, Vec2_GetParse(line));
             continue;
         }
 
@@ -242,7 +222,7 @@ LoadOBJ(const char * filename)
 
             // handles i, i/j/k, i//k, i/j
             while (!IS_NEW_LINE(line[0])) {
-                vertInd = FixIndex(atoi(line), allVerts.size);
+                vertInd = FixIndex(atoi(line), mesh->verts.size);
 
                 // i
                 line += strcspn(line, "/ \t\r");
@@ -254,12 +234,12 @@ LoadOBJ(const char * filename)
                 // i//k
                 if (line[0] == '/') {
                     ++line;
-                    normInd = FixIndex(atoi(line), allNorms.size);
+                    normInd = FixIndex(atoi(line), mesh->normals.size);
                     break;
                 }
 
                 // i/j/k or i/j
-                texcrdInd = FixIndex(atoi(line), alltexcrds.size);
+                texcrdInd = FixIndex(atoi(line), mesh->texcoords.size);
                 line += strcspn(line, "/ \t\r");
                 if (line[0] != '/') {
                     break;
@@ -267,7 +247,7 @@ LoadOBJ(const char * filename)
 
                 // i/j/k
                 ++line; // skip '/'
-                FixIndex(atoi(line), allNorms.size);
+                FixIndex(atoi(line), mesh->normals.size);
                 break;
             }
 
@@ -281,13 +261,8 @@ LoadOBJ(const char * filename)
             line += 2;
             line += strspn(line, " \t");
 
-            if (shapeName) {
-                free(shapeName);
-                shapeName = NULL;
-            }
-
-            shapeName = StrDuplicate(line, MAX_SHAPE_NAME_LEN);
-            printf("Shape: %s\n", shapeName);
+            shape->name = StrDuplicate(line, MAX_SHAPE_NAME_LEN);
+            printf("Shape: %s\n", shape->name);
 
             continue;
         }
@@ -295,49 +270,32 @@ LoadOBJ(const char * filename)
         printf("Warning: Ignored line '%s'\n", line);
     }
 
-    free(shapeName);
-
     // Shrink to just what we need
-    DynArrVec3_Shrink(&allVerts);
-    DynArrVec3_Shrink(&allNorms);
-    DynArrVec2_Shrink(&alltexcrds);
+    DynArrVec3_Shrink(&mesh->verts);
+    DynArrVec3_Shrink(&mesh->normals);
+    DynArrVec2_Shrink(&mesh->texcoords);
 
-    printf("Vertices %d\n", allVerts.size);
+    printf("Vertices %d\n", mesh->verts.size);
     // for (int i = 0; i < allVerts.size; ++i) {
     //    Vec3_Print(&(allVerts.data[i]));
     //}
-    printf("Normals %d\n", allNorms.size);
+    printf("Normals %d\n", mesh->normals.size);
     // for (int i = 0; i < allNorms.size; ++i) {
     //    Vec3_Print(&(allNorms.data[i]));
     //}
-    printf("texcrds %d\n", alltexcrds.size);
+    printf("texcrds %d\n", mesh->texcoords.size);
     // for (int i = 0; i < alltexcrds.size; ++i) {
     //    Vec2_Print(&(alltexcrds.data[i]));
     //}
 
-    DynArrVec3_Free(&curVerts);
-    DynArrVec3_Free(&curNorms);
-    DynArrVec2_Free(&curtexcrds);
-
-    DynArrVec3_Free(&allVerts);
-    DynArrVec3_Free(&allNorms);
-    DynArrVec2_Free(&alltexcrds);
-
-    DynArrMesh_Free(&meshes);
+    Shape_Term(shape);
 
     fclose(fp);
     return true;
 
 error:
-    DynArrVec3_Free(&curVerts);
-    DynArrVec3_Free(&curNorms);
-    DynArrVec2_Free(&curtexcrds);
-
-    DynArrVec3_Free(&allVerts);
-    DynArrVec3_Free(&allNorms);
-    DynArrVec2_Free(&alltexcrds);
+    Shape_Term(shape);
 
     fclose(fp);
-    OBJ_Term(this);
     return false;
 }

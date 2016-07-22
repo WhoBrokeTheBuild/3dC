@@ -57,11 +57,9 @@ main(int argc, char * argv[])
     Camera_Init(&camera, 1024, 768, Vec3_Create(20.0f, 150.0f, 20.0f),
         Vec3_Create(0.7f, 0.0f, 0.7f), Vec3_Create(0.0f, 1.0f, 0.0f), 45.0f, 0.1f, 10000.0f);
 
-    OBJ cube;
-    CHECK(OBJ_Load(&cube, "assets/cube.obj"), "Failed to load cube");
+    CHECK(LoadOBJ("assets/cube.obj"), "Failed to load cube");
 
     Camera_Term(&camera);
-    OBJ_Term(&cube);
 
     glutDisplayFunc(Render);
     glutMainLoop();
@@ -71,7 +69,6 @@ main(int argc, char * argv[])
 error:
 
     Camera_Term(&camera);
-    OBJ_Term(&cube);
 
     return 1;
 }
